@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole Game</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .game-container {
+            text-align: center;
+            background-color: #8096f8;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        #gameArea {
+            display: grid;
+            grid-template-columns: repeat(3, 100px);
+            grid-gap: 10px;
+            margin: 20px auto;
+        }
+
+        .hole {
+            width: 100px;
+            height: 100px;
+            background-color: blue;
+            border-radius: 8px;
+            position: relative;
+        }
+
+        .mole {
+            width: 80px;
+            height: 80px;
+            background-color: rgb(224, 75, 99);
+            border-radius: 50%;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            display: none;
+            cursor: pointer;
+        }
+
+        #score {
+            font-size: 18px;
+        }
+
+        #timer {
+            font-size: 18px;
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h1>Whack a Mole!</h1>
+        <div id="score">Score: 0</div>
+        <div id="timer">Time Left: 30s</div>
+        <div id="gameArea">
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+            <div class="hole"><div class="mole"></div></div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const holes = document.querySelectorAll('.hole');
+            const moles = document.querySelectorAll('.mole');
+            const scoreDisplay = document.getElementById('score');
+            const timerDisplay = document.getElementById('timer');
+            let score = 0;
+            let timeLeft = 30;
+
+            function getRandomHole() {
+                const index = Math.floor(Math.random() * holes.length);
+                return holes[index];
+            }
+
+            function showMole() {
+                const hole = getRandomHole();
+                const mole = hole.querySelector('.mole');
+                mole.style.display = 'block';
+                mole.style.pointerEvents = 'auto'; 
+
+                setTimeout(() => {
+                    mole.style.display = 'none';
+                    mole.style.pointerEvents = 'none'; 
+                }, 800); 
+            }
+
+            moles.forEach(mole => {
+                mole.addEventListener('click', () => {
+                    if (mole.style.display === 'block') {
+                        score++;
+                        scoreDisplay.textContent = `Score: ${score}`;
+                        mole.style.display = 'none';
+                        mole.style.pointerEvents = 'none'; 
+                    }
+                });
+            });
+
+            function startGame() {
+                const gameInterval = setInterval(showMole, 700); 
+                const timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+                    if (timeLeft <= 0) {
+                        clearInterval(gameInterval);
+                        clearInterval(timerInterval);
+                        alert(`Game over! Your score is ${score}.`);
+                    }
+                }, 1000);
+            }
+
+            startGame();
+        });
+    </script>
+</body>
+</html>
